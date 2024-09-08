@@ -75,6 +75,11 @@ def create(book_request: BookRequest):
     new_book.id = increase_book_id()
     BOOKS.append(new_book)
 
+@app.put("/books/update-book")
+def update(book_request: BookRequest):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].id == book_request.id:
+            BOOKS[i] = book_request
 
 # - - - 関数
 def increase_book_id():
