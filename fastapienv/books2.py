@@ -38,12 +38,8 @@ def index():
 
 @app.post("/books/{book_id}")
 def show(book_id: int):
-    return next((book for book in BOOKS if book.get(id) == book_id), None)
+    return next((book for book in BOOKS if book.id == book_id), None)
 
 @app.put("/books/create_book")
 def create(new_book=Body()):
-    books.append(new_book)
-
-# @app.put("/books/update_book")
-# def update(updated_book=Body()):
-#     for index in books:
+    BOOKS.append(new_book)
