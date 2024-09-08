@@ -21,11 +21,23 @@ class Book:
 
 # for validation
 class BookRequest(BaseModel):
-    id: Optional[int] = None
+    id: Optional[int] = Field(description="ID is not required on Create", default=None)
     title: str = Field(min_length=3)
     author: str = Field(min_length=1)
     pages: int = Field(gt=0)
     category: str
+
+    model_config = {
+	"json_schema_extra": {
+		"example": {
+			"title": "New book", 
+			"author": "new author", 
+			"pages": 100, 
+			"category": "new category", 
+		}
+	}
+}
+
 
 
 BOOKS = [
