@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Body
-from pydantic import BaseModel
+from typing import Optional
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -20,12 +21,11 @@ class Book:
 
 # for validation
 class BookRequest(BaseModel):
-    id: int
-    title: str
-    author: str
-    pages: int
+    id: Optional[int] = None
+    title: str = Field(min_length=3)
+    author: str = Field(min_length=1)
+    pages: int = Field(gt=0)
     category: str
-
 
 
 BOOKS = [
@@ -53,4 +53,9 @@ def show(book_id: int):
 @app.post("/books/create-book")
 def create(book_request: BookRequest):
     new_book = Book(**book_request.model_dump())
+    new_book.id = increase_book_id()
     BOOKS.append(new_book)
+
+# - - - 関数
+def increase_book_id():
+    return BOOKS[-1].id + 1 if len(BOOKS) > 0 else 1
