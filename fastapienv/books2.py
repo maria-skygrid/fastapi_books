@@ -81,6 +81,11 @@ def update(book_request: BookRequest):
         if BOOKS[i].id == book_request.id:
             BOOKS[i] = book_request
 
+@app.delete("/books/delete-book")
+def delete(book_id: int):
+   global BOOKS
+   BOOKS = [book for book in BOOKS if book.id != book_id]
+
 # - - - 関数
 def increase_book_id():
     return BOOKS[-1].id + 1 if len(BOOKS) > 0 else 1
