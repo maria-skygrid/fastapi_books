@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Path
 from pydantic import BaseModel, Field
 
 app = FastAPI()
@@ -61,36 +61,43 @@ BOOKS = [
 
 # - - - - - - -
 
+# - - - INDEX
 @app.get("/books")
 def index():
     return BOOKS
 
+# - - - SHOW
 @app.get("/books/{book_id}")
-def show(book_id: int):
+def show(book_id: int = Path(gt=0)):
     return next((book for book in BOOKS if book.id == book_id), None)
 
+# - - - BOOKS BY RATING
 @app.get("/books/by-rating/{book_rating}")
 def book_by_rating(book_rating: float):
     return [book for book in BOOKS if book.rating == book_rating ]
 
+# - - - BOOKS BY PUBLISHED YEAR
 @app.get("/books/by-published-year/{book_published_year}")
 def books_by_published_year(published_year: int):
     return [book for book in BOOKS if book.published_year == published_year]
 
+# - - - CREATE
 @app.post("/books/create-book")
 def create(book_request: BookRequest):
     new_book = Book(**book_request.model_dump())
     new_book.id = increase_book_id()
     BOOKS.append(new_book)
 
+# - - - UPDATE
 @app.put("/books/update-book")
 def update(book_request: BookRequest):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book_request.id:
             BOOKS[i] = book_request
 
+# - - - DELETE
 @app.delete("/books/delete-book")
-def delete(book_id: int):
+def delete(book_id: int = Path(gt=0)):
    global BOOKS
    BOOKS = [book for book in BOOKS if book.id != book_id]
 
